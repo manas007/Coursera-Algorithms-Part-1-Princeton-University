@@ -1,5 +1,5 @@
 .idea/
 .lift/
-*.java
+*.class
 *.png
 *.iml
