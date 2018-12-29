@@ -1,4 +1,4 @@
-/******************************************************************************
+package src.week1; /******************************************************************************
  *  Compilation:  javac PercolationVisualizer.java
  *  Execution:    java PercolationVisualizer input.txt
  *  Dependencies: Percolation.java
@@ -62,7 +62,7 @@ public class PercolationVisualizer {
     }
 
     public static void main(String[] args) {
-        In in = new In(args[0]);      // input file
+        In in = new In("src/week1/input20.txt");      // input file
         int n = in.readInt();         // n-by-n percolation system
 
         // turn on animation mode
