@@ -89,11 +89,23 @@ public class RandomizedQueue<Item> implements Iterable<Item>
 
     private class RandomizedQueueIterator implements Iterator<Item>
     {
-        private int counter = size;
+        private int counter = 0;
+        private Item[] copyOfSorageArr = (Item[]) new Object[size];
+
+        public RandomizedQueueIterator()
+        {
+            for (int i = 0; i < size; i++)
+            {
+                copyOfSorageArr[i] = storageArr[i];
+
+            }
+            StdRandom.shuffle(copyOfSorageArr);
+
+        }
 
         @Override
         public boolean hasNext() {
-            return counter != 0;
+            return counter != size;
         }
 
         @Override
@@ -102,8 +114,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             if (!hasNext()) {
                 throw new NoSuchElementException("Nothing to return");
             }
-            int randomInt = StdRandom.uniform(counter--);
-            return storageArr[randomInt];
+            return copyOfSorageArr[counter++];
         }
 
         @Override
@@ -125,9 +136,14 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     public static void main(String[] args) {
 
         RandomizedQueue<Integer> rq = new RandomizedQueue<Integer>();
-        rq.size();
-        rq.size();
+        rq.enqueue(1);
+        rq.enqueue(2);
+        rq.enqueue(3);
         rq.enqueue(4);
+        rq.enqueue(5);
+        rq.enqueue(6);
+        rq.enqueue(7);
+        rq.enqueue(8);
 
         Iterator<Integer> it = rq.iterator();
         while (it.hasNext())

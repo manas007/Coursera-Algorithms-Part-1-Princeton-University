@@ -10,7 +10,6 @@ package src.week2;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class Deque<Item> implements Iterable<Item>
 {
@@ -59,7 +58,6 @@ public class Deque<Item> implements Iterable<Item>
         if (size == 0)
         {
             topNode.item = item;
-            size++;
         }
 
         else
@@ -69,9 +67,8 @@ public class Deque<Item> implements Iterable<Item>
             topNode.next = newTopNode;
             newTopNode.previous = topNode;
             topNode = newTopNode;
-            size++;
         }
-
+        size++;
     }
 
     public void addLast(Item item)           // add the item to the end
@@ -87,7 +84,6 @@ public class Deque<Item> implements Iterable<Item>
             bottomNode.next = null;
             bottomNode.previous = null;
             topNode = bottomNode;
-            size++;
         }
         else {
             Node newBottomNode = new Node();
@@ -96,8 +92,8 @@ public class Deque<Item> implements Iterable<Item>
             newBottomNode.next = bottomNode;
             newBottomNode.previous = null;
             bottomNode = newBottomNode;
-            size++;
         }
+        size++;
 
     }
 
@@ -117,7 +113,6 @@ public class Deque<Item> implements Iterable<Item>
             topNode.next = null;
             topNode.item = null;
             bottomNode = topNode;
-            size--;
         }
         else
         {
@@ -127,9 +122,8 @@ public class Deque<Item> implements Iterable<Item>
             topNode.next = null;
             topNode.item = null;
             topNode = newTopNode;
-            size--;
         }
-
+        size--;
         return itemToReturn;
 
     }
@@ -149,7 +143,6 @@ public class Deque<Item> implements Iterable<Item>
             bottomNode.next = null;
             bottomNode.item = null;
             topNode = bottomNode;
-            size--;
         }
         else
         {
@@ -159,8 +152,8 @@ public class Deque<Item> implements Iterable<Item>
             bottomNode.previous = null;
             bottomNode.next = null;
             bottomNode = newBottomNode;
-            size--;
         }
+        size--;
         return itemToReturn;
     }
 
@@ -176,7 +169,7 @@ public class Deque<Item> implements Iterable<Item>
 
         @Override
         public boolean hasNext() {
-            return !(current.previous == null && current.next == null && Objects.isNull(current.item));
+            return current != null;
         }
 
         @Override
@@ -201,11 +194,12 @@ public class Deque<Item> implements Iterable<Item>
     public static void main(String[] args)   // unit testing (optional)
     {
         Deque<Integer> deque = new Deque<Integer>();
-        deque.addLast(1);
+
         Iterator<Integer> it = deque.iterator();
-        while (it.hasNext())
+        System.out.println(it.hasNext());
+        /*while (it.hasNext())
         {
             System.out.println(it.next());
-        }
+        }*/
     }
 }
