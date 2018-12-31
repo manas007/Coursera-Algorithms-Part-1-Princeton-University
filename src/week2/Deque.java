@@ -7,9 +7,13 @@
 package src.week2;
 
 
-import java.util.NoSuchElementException;
 
-public class Deque {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
+public class Deque<Item> implements Iterable<Item>
+{
 
     private Node topNode;
     private Node bottomNode;
@@ -17,12 +21,14 @@ public class Deque {
 
     private class Node {
         private Node next;
-        private String item;
+        private Node previous;
+        private Item item;
 
         public Node()
         {
             next = null;
             item = null;
+            previous = null;
         }
     }
 
@@ -43,118 +49,163 @@ public class Deque {
         return size;
     }
 
-    public void addFirst(String item)         // add the item to the front
+    public void addFirst(Item item)         // add the item to the front
     {
-        if(item == null)
+        if (item == null)
         {
             throw new IllegalArgumentException("Called addFirst with null");
         }
 
-        if(size == 0)
+        if (size == 0)
         {
             topNode.item = item;
             size++;
         }
 
-        else if(size == 1 && topNode.next == null)
-        {
-            topNode.item = item;
-            topNode.next = bottomNode;
-            size++;
-        }
         else
         {
             Node newTopNode = new Node();
             newTopNode.item = item;
-            newTopNode.next = topNode;
+            topNode.next = newTopNode;
+            newTopNode.previous = topNode;
             topNode = newTopNode;
             size++;
         }
 
     }
 
-    public void addLast(String item)           // add the item to the end
+    public void addLast(Item item)           // add the item to the end
     {
-        if(item == null)
+        if (item == null)
         {
             throw new IllegalArgumentException("Called addFirst with null");
         }
 
-        if(size == 0)
+        if (size == 0)
         {
             bottomNode.item = item;
+            bottomNode.next = null;
+            bottomNode.previous = null;
             topNode = bottomNode;
             size++;
         }
         else {
-            Node oldBottomNode = bottomNode;
             Node newBottomNode = new Node();
             newBottomNode.item = item;
+            bottomNode.previous = newBottomNode;
+            newBottomNode.next = bottomNode;
+            newBottomNode.previous = null;
             bottomNode = newBottomNode;
-            bottomNode.next = oldBottomNode;
             size++;
         }
 
     }
 
-    public String removeFirst()                // remove and return the item from the front
+    public Item removeFirst()                // remove and return the item from the front
     {
-        if(size == 0)
+        if (size == 0)
         {
             throw new NoSuchElementException("The Dequeue is empty. Add some data first.");
         }
-        String itemToReturn = null;
 
-        if(size == 1)
+        Item itemToReturn;
+
+        if (size == 1)
         {
             itemToReturn = topNode.item;
-            topNode = bottomNode;
+            topNode.previous = null;
+            topNode.next = null;
+            topNode.item = null;
+            bottomNode = topNode;
             size--;
         }
         else
         {
             itemToReturn = topNode.item;
-            Node newTopNode = topNode.next;
-            topNode = null;
+            Node newTopNode = topNode.previous; // changes
+            topNode.previous = null;
+            topNode.next = null;
+            topNode.item = null;
             topNode = newTopNode;
+            size--;
+        }
+
+        return itemToReturn;
+
+    }
+
+    public Item removeLast()                 // remove and return the item from the end
+    {
+        if (size == 0)
+        {
+            throw new NoSuchElementException("The Dequeue is empty. Add some data first.");
+        }
+        Item itemToReturn;
+
+        if(size == 1)
+        {
+            itemToReturn = bottomNode.item;
+            bottomNode.previous = null;
+            bottomNode.next = null;
+            bottomNode.item = null;
+            topNode = bottomNode;
+            size--;
+        }
+        else
+        {
+            itemToReturn = bottomNode.item;
+            Node newBottomNode = bottomNode.next; // chnanges 4 lines
+            bottomNode.item = null;
+            bottomNode.previous = null;
+            bottomNode.next = null;
+            bottomNode = newBottomNode;
             size--;
         }
         return itemToReturn;
     }
 
-    public String removeLast()                 // remove and return the item from the end
+    public Iterator<Item> iterator()        // return an iterator over items in order from front to end
     {
-        if(size == 0)
-        {
-            throw new NoSuchElementException("The Dequeue is empty. Add some data first.");
+        return new DequeIterator();
+    }
+
+    private class DequeIterator implements Iterator<Item>
+    {
+
+        private Node current = topNode;
+
+        @Override
+        public boolean hasNext() {
+            return !(current.previous == null && current.next == null && Objects.isNull(current.item));
         }
 
-        String itemToReturn = bottomNode.item;
-        Node newBottomNode = bottomNode.next;
-        bottomNode = null;
-        bottomNode = newBottomNode;
-        size--;
-        return itemToReturn;
-    }
+        @Override
+        public Item next()
+        {
+            if (!hasNext())
+            {
+                throw new NoSuchElementException("No more items in deque");
+            }
 
-    /*public Iterator<Item> iterator()         // return an iterator over items in order from front to end
-    {
+            Item toReturnItem = current.item;
+            current = current.previous;
+            return toReturnItem;
+        }
 
+        @Override
+        public void remove()
+        {
+            throw new UnsupportedOperationException("Remove is not supported");
+        }
     }
-*/
     public static void main(String[] args)   // unit testing (optional)
     {
-        Deque testObj = new Deque();
-        testObj.addFirst("a");
-        testObj.addFirst("b");
-        testObj.addFirst("c");
-        testObj.addFirst("d");
-
-        System.out.println(testObj.size);
-
-        System.out.println(testObj.removeLast());
-
-        System.out.println(testObj.size());
-
+        Deque<Integer> deque = new Deque<Integer>();
+        deque.addLast(1);
+        Iterator<Integer> it = deque.iterator();
+        while (it.hasNext())
+        {
+            System.out.println(it.next());
+        }
     }
 }
